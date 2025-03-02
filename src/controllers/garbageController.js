@@ -4,6 +4,7 @@ const GarbageBin = require("../models/GarbageBin");
 // @route   POST /api/garbage
 const postGarbageData = async (req, res) => {
   try {
+    console.log(req.body)
     const { location, weight, level, battery } = req.body;
     
     if (!location || !weight || !level || !battery) {
