@@ -4,16 +4,29 @@ const GarbageBin = require("../models/GarbageBin");
 // @route   POST /api/garbage
 const postGarbageData = async (req, res) => {
   try {
-    console.log(req.body)
+    console.log(req.body);
     const { location, weight, level, battery } = req.body;
-    
-    if (!location || !weight || !level || !battery) {
+
+    if (!location || weight === undefined || level === undefined || battery === undefined) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const garbageData = new GarbageBin({ location, weight, level, battery });
-    await garbageData.save();
-    res.status(201).json({ message: "Garbage data saved successfully" });
+    let garbageBin = await GarbageBin.findOne({ location });
+
+    if (garbageBin) {
+      // Update existing bin data
+      garbageBin.weight = weight;
+      garbageBin.level = level;
+      garbageBin.battery = battery;
+      garbageBin.timestamp = new Date();
+      await garbageBin.save();
+      res.status(200).json({ message: "Garbage data updated successfully" });
+    } else {
+      // Create new garbage bin entry
+      const newGarbageBin = new GarbageBin({ location, weight, level, battery });
+      await newGarbageBin.save();
+      res.status(201).json({ message: "Garbage data saved successfully" });
+    }
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
