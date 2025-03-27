@@ -1,8 +1,12 @@
 const GarbageBin = require("../models/GarbageBin");
 
-// @desc    Post collected data (append to readings array)
+let requestCount = 0; // Counter outside the function
+
 const postGarbageData = async (req, res) => {
   try {
+    requestCount++; // Increment counter
+    console.log(`[${requestCount}] Request Body:`, req.body); // Indexed log
+
     const { location, weight, level, battery } = req.body;
 
     if (!location || weight === undefined || level === undefined || battery === undefined) {
@@ -19,12 +23,10 @@ const postGarbageData = async (req, res) => {
     let garbageBin = await GarbageBin.findOne({ location });
 
     if (garbageBin) {
-      // Append new reading to existing bin
       garbageBin.readings.push(newReading);
       await garbageBin.save();
       res.status(200).json({ message: "Reading added to existing bin" });
     } else {
-      // Create new bin with initial reading
       const newGarbageBin = new GarbageBin({
         location,
         readings: [newReading]
