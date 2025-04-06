@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 const fs = require("fs");
 
 // 🧠 Your Atlas URI:
-const MONGO_URI = process.env.MONGO_URI;
+const MONGO_URI = "mongodb+srv://osamaalriyami7:osama1osama@cluster0.qau1w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 // 🔁 Replace with your actual schema path
 const GarbageBin = require("./src/models/GarbageBin");
 
-const data = JSON.parse(fs.readFileSync("bins.json", "utf-8"));
+const data = JSON.parse(fs.readFileSync("cleaned_output.json", "utf-8"));
 
 mongoose
   .connect(MONGO_URI, {
